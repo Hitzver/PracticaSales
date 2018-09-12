@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using PracticaSales.Views;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace PracticaSales
@@ -11,7 +12,7 @@ namespace PracticaSales
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new ProductsPage();
         }
 
         protected override void OnStart()
