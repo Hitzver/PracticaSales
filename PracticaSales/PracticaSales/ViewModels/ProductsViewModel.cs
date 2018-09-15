@@ -21,7 +21,6 @@ namespace PracticaSales.ViewModels
         public ProductsViewModel()
         {
             apiService = new ApiService();
-            
         }
 
         private async void LoadProducts()
