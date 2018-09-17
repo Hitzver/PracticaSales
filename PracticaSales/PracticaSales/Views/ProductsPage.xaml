@@ -3,12 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PracticaSales.Views.ProductsPage"
              BindingContext="{Binding Main, Source={StaticResource Locator}}"
-             >
+             Title="Productos" >
     <ContentPage.Content>
-        <StackLayout BindingContext="{Binding Products}">
+        <StackLayout BindingContext="{Binding Products}"
+                     Padding="5">
             <ListView
-                ItemsSource="{Binding Products}">
-                
+                HasUnevenRows="True"
+                IsRefreshing="{Binding IsRefresing}"
+                IsPullToRefreshEnabled="True"
+                ItemsSource="{Binding Products}"
+                RefreshCommand="{Binding RefreshCommand}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label 
+                                    FontAttributes="Bold"
+                                    Grid.Column="0" 
+                                    Text="{Binding Descripcion}">
+                                </Label>
+                                <Label 
+                                    HorizontalOptions="End"
+                                    Grid.Column="1" 
+                                    Text="{Binding Price, StringFormat='{0:C2}'}">
+                                </Label>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
     </ContentPage.Content>
