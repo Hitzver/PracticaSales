@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using PracticaSales.Common.Models;
+using PracticaSales.Helpers;
 using PracticaSales.Services;
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,24 @@ namespace PracticaSales.ViewModels
         private async void LoadProducts()
         {
             IsRefresing = true;
-            //var url = Application.Current.Resources["UrlApi"].ToString();
-            var response = await apiService.GetList<Product>("https://practicasalesapivla.azurewebsites.net", "/api", "/Products");
+
+            var connection = await apiService.CheckConnection();
+            if (!connection.IsSuccess)
+            {
+                IsRefresing = false;
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, connection.Message, Languages.Accept);
+                return;
+            }
+
+            var url = Application.Current.Resources["UrlApi"].ToString();
+            var prefix = Application.Current.Resources["UrlPrefix"].ToString();
+            var controller = Application.Current.Resources["UrlProductsController"].ToString();
+
+            var response = await apiService.GetList<Product>(url, prefix, controller);
             if(!response.IsSuccess)
             {
                 IsRefresing = false;
-                await Application.Current.MainPage.DisplayAlert("Error", response.Message, "Accept");
+                await Application.Current.MainPage.DisplayAlert(Languages.Error, response.Message, Languages.Accept);
                 return;
             }
 

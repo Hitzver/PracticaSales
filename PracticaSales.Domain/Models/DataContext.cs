@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PracticaSales.Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace PracticaSales.Domain.Models
 
         }
 
-        public System.Data.Entity.DbSet<PracticaSales.Common.Models.Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }

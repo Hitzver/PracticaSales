@@ -8,6 +8,6 @@ namespace PracticaSales.Backend.Models
 {
     public class LocalDataContext : DataContext
     {
-        public System.Data.Entity.DbSet<PracticaSales.Common.Models.Product> Products { get; set; }
+        
     }
 }
