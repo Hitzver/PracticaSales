@@ -19,7 +19,7 @@ namespace PracticaSales.Backend.Controllers
         // GET: Products
         public async Task<ActionResult> Index()
         {
-            return View(await db.Products.ToListAsync());
+            return View(await db.Products.OrderBy(x=>x.Descripcion).ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -48,7 +48,7 @@ namespace PracticaSales.Backend.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ProductId,Descripcion,Remarks,ImagePath,Price,IsAvailable,PublishOn")] Product product)
+        public async Task<ActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
