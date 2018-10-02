@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using PracticaSales.Backend.Models;
 using PracticaSales.Common.Models;
+using PracticaSales.Backend.Helpers;
 
 namespace PracticaSales.Backend.Controllers
 {
@@ -48,16 +49,41 @@ namespace PracticaSales.Backend.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Product product)
+        public async Task<ActionResult> Create(ProductView view)
         {
             if (ModelState.IsValid)
             {
+                var pic = string.Empty;
+                var folder = "~/Content/Products";
+
+                if (view.ImageFile != null)
+                {
+                    pic = FilesHelper.UploadPhoto(view.ImageFile, folder);
+                    pic = $"{folder}/{pic}"; //string.Format("{0}/{1}", folder, pic);
+                }
+
+                var product = ToProduct(view,pic);
+
                 db.Products.Add(product);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(product);
+            return View(view);
+        }
+
+        private Product ToProduct(ProductView view, string pic)
+        {
+            return new Product
+            {
+                Descripcion = view.Descripcion,
+                ImagePath = pic,
+                IsAvailable = view.IsAvailable,
+                Price = view.Price,
+                ProductId = view.ProductId,
+                PublishOn = view.PublishOn,
+                Remarks = view.Remarks
+            };
         }
 
         // GET: Products/Edit/5
@@ -67,12 +93,30 @@ namespace PracticaSales.Backend.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = await db.Products.FindAsync(id);
+
+            var product = await db.Products.FindAsync(id);
+
             if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+
+            var view = ToView(product);
+
+            return View(view);
+        }
+
+        private ProductView ToView(Product product)
+        {
+            return new ProductView {
+                Descripcion = product.Descripcion,
+                ImagePath = product.ImagePath,
+                IsAvailable = product.IsAvailable,
+                Price = product.Price,
+                ProductId = product.ProductId,
+                PublishOn = product.PublishOn,
+                Remarks = product.Remarks
+            };
         }
 
         // POST: Products/Edit/5
@@ -80,15 +124,26 @@ namespace PracticaSales.Backend.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ProductId,Descripcion,Remarks,ImagePath,Price,IsAvailable,PublishOn")] Product product)
+        public async Task<ActionResult> Edit(ProductView view)
         {
             if (ModelState.IsValid)
             {
+                var pic = view.ImagePath;
+                var folder = "~/Content/Products";
+
+                if (view.ImageFile != null)
+                {
+                    pic = FilesHelper.UploadPhoto(view.ImageFile, folder);
+                    pic = $"{folder}/{pic}"; //string.Format("{0}/{1}", folder, pic);
+                }
+
+                var product = ToProduct(view,pic);
+
                 db.Entry(product).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(product);
+            return View(view);
         }
 
         // GET: Products/Delete/5
@@ -98,7 +153,9 @@ namespace PracticaSales.Backend.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Product product = await db.Products.FindAsync(id);
+
+            var product = await db.Products.FindAsync(id);
+
             if (product == null)
             {
                 return HttpNotFound();

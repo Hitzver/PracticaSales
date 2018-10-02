@@ -1,0 +1,13 @@
+﻿using PracticaSales.Common.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace PracticaSales.Backend.Models
+{
+    public class ProductView : Product
+    {
+        public HttpPostedFileBase ImageFile { get; set; }
+    }
+}

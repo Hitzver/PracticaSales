@@ -32,6 +32,19 @@ namespace PracticaSales.Common.Models
         [DataType(DataType.Date)]
         public DateTime PublishOn { get; set; }
 
+        public string ImageFullPath
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ImagePath))
+                {
+                    return "noproduct";
+                }
+
+                return $"https://practicasalesbackend20180912023611.azurewebsites.net/{ImagePath.Substring(1)}";
+            }
+        }
+
         public override string ToString()
         {
             return Descripcion;
